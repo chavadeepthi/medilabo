@@ -66,4 +66,13 @@ public class PatientController {
 
         return "redirect:/patients/all";
     }
+//    @DeleteMapping("/patients/{id}")
+//    public String deletePatient(@PathVariable Long id) {
+//        // Include id as request param
+//        String urlWithParam = backendUrl + "?id=" + id;
+//
+//        restTemplate.exchange(urlWithParam, HttpMethod.PUT, request, Patient.class);
+//
+//        return "redirect:/patients"; // after delete, go back to patient list
+//    }
 }

@@ -15,16 +15,19 @@
         <th>Phone</th>
     </tr>
     <tr th:each="patient : ${patients}">
-        <td th:text="${patient.patientId}"></td>
+<!--        <td th:text="${patient.patientId}"></td>-->
         <td th:text="${patient.firstName}"></td>
         <td th:text="${patient.lastName}"></td>
         <td th:text="${patient.dob}"></td>
         <td th:text="${patient.address}"></td>
+        <td th:text="${patient.gender}"></td>
         <td th:text="${patient.phone}"></td>
         <td>
             <a th:href="@{/patients/edit/{id}(id=${patient.patientId})}">Edit</a>
         </td>
     </tr>
 </table>
+
+<a th:href="@{/patients/add}">Add Patient</a>
 </body>
 </html>
