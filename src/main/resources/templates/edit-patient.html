@@ -6,33 +6,31 @@
 <body>
 <h1>Edit Patient</h1>
 <form th:action="@{/patients/edit/{id}(id=${patient.patientId})}" th:object="${patient}" method="post">
-    <div>
-        <label>First Name:</label>
-        <input type="text" th:field="*{firstName}" />
-    </div>
-    <div>
-        <label>Last Name:</label>
-        <input type="text" th:field="*{lastName}" />
-    </div>
-    <div>
-        <label>DOB:</label>
-        <input type="date" th:field="*{dob}" />
-    </div>
-    <div>
-        <label>Address:</label>
-        <input type="text" th:field="*{address}" />
-    </div>
-    <div>
-        <label>Gender:</label>
-        <input type="text" th:field="*{gender}" />
-    </div>
-    <div>
-        <label>Phone:</label>
-        <input type="text" th:field="*{phone}" />
-    </div>
-    <div>
-        <button type="submit">Update Patient</button>
-    </div>
+    <h3>Patient Info</h3>
+    <label>First Name: <input type="text" th:field="*{firstName}" /></label><br/>
+    <label>Last Name: <input type="text" th:field="*{lastName}" /></label><br/>
+    <label>DOB: <input type="date" th:field="*{dob}" /></label><br/>
+    <label>Address: <input type="text" th:field="*{address}" /></label><br/>
+    <label>Gender: <input type="text" th:field="*{gender}" /></label><br/>
+    <label>Phone: <input type="text" th:field="*{phone}" /></label><br/>
+
+    <h3>Add Medical Note</h3>
+    <label>Physician: <input type="text" name="physician" /></label><br/>
+    <label>Note: <textarea name="note"></textarea></label><br/>
+
+    <button type="submit">Save</button>
 </form>
+<div>
+    <a th:href="@{/patients/all}">Back to Patient List</a>
+</div>
+
+<ul>
+    <li th:each="n : ${notes}">
+        <strong th:text="${n.physician}"></strong> -
+        <span th:text="${n.createdAtFormatted}"></span>
+        <pre th:text="${n.note}"></pre>
+    </li>
+</ul>
+
 </body>
 </html>
