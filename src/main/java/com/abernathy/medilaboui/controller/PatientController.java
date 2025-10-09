@@ -24,6 +24,7 @@ public class PatientController {
     }
 
     private final String backendBaseUrl = "http://localhost:8081/api/patients";
+    private final String medicalNotesBaseUrl = "http://localhost:8083/api/patients";
 
     // -----------------------
     // List all patients
@@ -70,7 +71,7 @@ public class PatientController {
 
         // Fetch notes
         MedicalHistoryNote[] notesArray = restTemplate.getForObject(
-                backendBaseUrl + "/history?patientId=" + id, MedicalHistoryNote[].class);
+                medicalNotesBaseUrl + "/history?patientId=" + id, MedicalHistoryNote[].class);
         List<MedicalHistoryNote> notes = notesArray != null ? Arrays.asList(notesArray) : Collections.emptyList();
         model.addAttribute("notes", notes);
 
@@ -106,12 +107,13 @@ public class PatientController {
             newNote.setPatientId(id);
             newNote.setPhysician(physician);
             newNote.setNote(note);
+            newNote.setPatientName(patient.getFirstName());
 
             HttpEntity<MedicalHistoryNote> noteRequest = new HttpEntity<>(newNote, headers);
 
             // POST JSON body to backend
             restTemplate.postForEntity(
-                    "http://localhost:8081/api/patients/history",
+                    "http://localhost:8083/api/patients/history",
                     noteRequest,
                     MedicalHistoryNote.class
             );

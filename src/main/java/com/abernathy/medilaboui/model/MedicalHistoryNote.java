@@ -12,6 +12,7 @@ public class MedicalHistoryNote {
     private String physician;
     private String note;
     private LocalDateTime createdAt;
+    private String patientName;
 
     public String getCreatedAtFormatted() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
