@@ -2,6 +2,7 @@ package com.abernathy.medilaboui.controller;
 
 import com.abernathy.medilaboui.model.Patient;
 import com.abernathy.medilaboui.model.MedicalHistoryNote;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +16,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/patients")
+
 public class PatientController {
 
     private final RestTemplate restTemplate;
@@ -23,17 +25,22 @@ public class PatientController {
         this.restTemplate = restTemplate;
     }
 
-    private final String backendBaseUrl = "http://localhost:8081/api/patients";
-    private final String medicalNotesBaseUrl = "http://localhost:8083/api/patients";
+    @Value("${backend.api.url}")
+    private String backendBaseUrl;
 
+    @Value("${medical.notes.api.url}")
+    private String medicalNotesBaseUrl;
+
+    @Value("${backend.all.api.url}")
+    private String backendUrlAll;
     // -----------------------
     // List all patients
     // -----------------------
     @GetMapping("/all")
     public String listPatients(Model model) {
-        String backendUrl = "http://localhost:8081/api/patients/all"; // use /all endpoint
+         // use /all endpoint
         ResponseEntity<Patient[]> response =
-                restTemplate.getForEntity(backendUrl, Patient[].class); // use backendUrl here
+                restTemplate.getForEntity(backendUrlAll, Patient[].class); // use backendUrl here
 
         List<Patient> patients = Arrays.asList(response.getBody());
         model.addAttribute("patients", patients);
