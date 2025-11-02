@@ -9,7 +9,7 @@
 <h1>Add New Patient</h1>
 
 <form th:action="@{/patients/add}" th:object="${patient}" method="post">
-<!--    <div>-->
+    <!--    <div>-->
 <!--        <label for="firstName">First Name:</label>-->
 <!--        <input type="text" id="firstName" th:field="*{firstName}" placeholder="First Name" required/>-->
 <!--    </div>-->
@@ -90,6 +90,7 @@
 </form>
 
 <div>
+<!--    <a th:href="${gatewayBaseUrl + '/patients/all'}">Back to Patient List</a>-->
     <a th:href="@{/patients/all}">Back to Patient List</a>
 </div>
 </body>

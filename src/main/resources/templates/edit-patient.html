@@ -6,7 +6,9 @@
 <body>
 <h1>Edit Patient</h1>
 <form th:action="@{/patients/edit/{id}(id=${patient.patientId})}" th:object="${patient}" method="post">
-    <h3>Patient Info</h3>
+
+    <input type="hidden" th:field="*{patientId}" />
+<h3>Patient Info</h3>
     <label>First Name: <input type="text" th:field="*{firstName}" /></label><br/>
     <label>Last Name: <input type="text" th:field="*{lastName}" /></label><br/>
     <label>DOB: <input type="date" th:field="*{dob}" /></label><br/>
@@ -19,11 +21,36 @@
     <label>Note: <textarea name="note"></textarea></label><br/>
 
     <button type="submit">Save</button>
+
 </form>
+
 <div>
+    <!--    <a th:href="${gatewayBaseUrl + '/patients/all'}">Back to Patient List</a>-->
     <a th:href="@{/patients/all}">Back to Patient List</a>
 </div>
+<!--&lt;!&ndash; ✅ Diabetes Risk Button &ndash;&gt;-->
+<!--<form th:action="@{/patients/{id}/risk(id=${patient.patientId})}" method="get">-->
+<!--    <button type="submit" style="background: #228be6; color:white; padding:8px; border:none; cursor:pointer;">-->
+<!--        Check Diabetes Risk-->
+<!--    </button>-->
+<!--</form>-->
 
+<!--<br/>-->
+
+<!--&lt;!&ndash; ✅ Risk Result Display &ndash;&gt;-->
+<!--<div th:if="${riskResult != null}">-->
+<!--    <h3>Diabetes Risk Assessment</h3>-->
+
+<!--    <p><strong>Risk Level:</strong>-->
+<!--        <span th:text="${riskResult.riskLevel}"></span>-->
+<!--    </p>-->
+
+<!--    <p><strong>Trigger Count:</strong>-->
+<!--        <span th:text="${riskResult.triggerCount}"></span>-->
+<!--    </p>-->
+<!--</div>-->
+<!-- Display Medical Notes -->
+<h3>Medical History Notes</h3>
 <ul>
     <li th:each="n : ${notes}">
         <strong th:text="${n.physician}"></strong> -
