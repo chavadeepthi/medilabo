@@ -1,5 +1,8 @@
 package com.abernathy.medilaboui.model;
 
+import lombok.Data;
+
+@Data
 public class DiabetesAssessmentResult {
     private Integer patientId;
     private String firstName;

@@ -10,8 +10,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -141,75 +139,43 @@ public class PatientController {
                 .collect(Collectors.toList())
         );
 
+        log.info("riskRequest:{}", riskRequest);
+
         // --- Fetch risk assessment ---
-        try {
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            // preserve session/cookies if needed
-            HttpSession session = request.getSession(false);
-            if (session != null) {
-                Object jwt = session.getAttribute("JWT");
-                if (jwt instanceof String) {
-                    headers.set(HttpHeaders.AUTHORIZATION, "Bearer " + jwt);
+        // Only call risk assessment if notes exist
+        if (!notes.isEmpty()) {
+            try {
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.APPLICATION_JSON);
+                // preserve session/cookies if needed
+                HttpSession session = request.getSession(false);
+                if (session != null) {
+                    Object jwt = session.getAttribute("JWT");
+                    if (jwt instanceof String) {
+                        headers.set(HttpHeaders.AUTHORIZATION, "Bearer " + jwt);
+                    }
                 }
+
+                HttpEntity<RiskAssessmentRequest> requestEntity = new HttpEntity<>(riskRequest, headers);
+
+                ResponseEntity<DiabetesAssessmentResult> riskResponse = restTemplate.exchange(
+                        gatewayBaseUrl + "/api/proxy/risk/assess",
+                        HttpMethod.POST,
+                        requestEntity,
+                        DiabetesAssessmentResult.class
+                );
+
+                model.addAttribute("riskResult", riskResponse.getBody());
+            } catch (HttpClientErrorException ex) {
+                log.error("Risk assessment failed: status={}, body={}", ex.getStatusCode(), ex.getResponseBodyAsString());
+                model.addAttribute("riskError", "Risk assessment failed: " + ex.getStatusCode());
             }
-
-            HttpEntity<RiskAssessmentRequest> requestEntity = new HttpEntity<>(riskRequest, headers);
-
-            ResponseEntity<DiabetesAssessmentResult> riskResponse = restTemplate.exchange(
-                    gatewayBaseUrl + "/api/proxy/risk/assess",
-                    HttpMethod.POST,
-                    requestEntity,
-                    DiabetesAssessmentResult.class
-            );
-
-            model.addAttribute("riskResult", riskResponse.getBody());
-        } catch (HttpClientErrorException ex) {
-            log.error("Risk assessment failed: status={}, body={}", ex.getStatusCode(), ex.getResponseBodyAsString());
-            model.addAttribute("riskError", "Risk assessment failed: " + ex.getStatusCode());
         }
 
         model.addAttribute("gatewayBaseUrl", gatewayBaseUrl);
 
         return "edit-patient";
     }
-//    @GetMapping("/risk/{id}")
-//    public String assessRisk(@PathVariable Long id, Model model, HttpServletRequest request) {
-//        HttpHeaders headers = new HttpHeaders();
-//        if (request.getCookies() != null) {
-//            Arrays.stream(request.getCookies())
-//                    .filter(c -> "JSESSIONID".equals(c.getName()))
-//                    .findFirst()
-//                    .ifPresent(cookie -> headers.add(HttpHeaders.COOKIE, "JSESSIONID=" + cookie.getValue()));
-//        }
-//
-//        String url = gatewayBaseUrl + "/api/proxy/risk/assessment?patientId=" + id;
-//
-//        log.info("UI: Calling risk endpoint URL {} with cookies {}", url,
-//                Arrays.toString(request.getCookies()));
-//
-////        ResponseEntity<DiabetesAssessmentResult> response = restTemplate.exchange(
-////                url,
-////                HttpMethod.GET,
-////                createEntityWithSession(request),
-////                DiabetesAssessmentResult.class
-////        );
-//
-//        try {
-//            ResponseEntity<DiabetesAssessmentResult> response = restTemplate.exchange(
-//                    url,
-//                    HttpMethod.GET,
-//                    createEntityWithSession(request),
-//                    DiabetesAssessmentResult.class);
-//            model.addAttribute("riskResult", response.getBody());
-//        } catch(HttpClientErrorException ex) {
-//            log.error("UI: Risk endpoint returned error status={}, body={}", ex.getStatusCode(), ex.getResponseBodyAsString());
-//            model.addAttribute("error", "Risk assessment failed: " + ex.getStatusCode());
-//        }
-//
-//        // Load patient + notes for display
-//        return showEditForm(id, model, request);
-//    }
 
 
     // -----------------------
@@ -261,7 +227,7 @@ public class PatientController {
 
         // Redirect to gateway patient list
         // Use relative path
-        return "redirect:/patients/all";
+        return "redirect:"+gatewayBaseUrl+"/patients/all";
     }
 
     // -----------------------
