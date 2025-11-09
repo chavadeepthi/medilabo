@@ -28,27 +28,18 @@
     <!--    <a th:href="${gatewayBaseUrl + '/patients/all'}">Back to Patient List</a>-->
     <a th:href="@{/patients/all}">Back to Patient List</a>
 </div>
-<!-- ✅ Diabetes Risk Button -->
-<a th:href="@{/patients/risk/{id}(id=${patient.patientId})}">
-    <button type="button" style="background: #228be6; color:white; padding:8px; border:none; cursor:pointer;">
-        Check Diabetes Risk
-    </button>
-</a>
-
-<br/>
 
 <!-- ✅ Risk Result Display -->
-<div th:if="${riskResult != null}">
+<div th:if="${riskResult != null}" class="risk-result">
     <h3>Diabetes Risk Assessment</h3>
-
-    <p><strong>Risk Level:</strong>
-        <span th:text="${riskResult.riskLevel}"></span>
-    </p>
-
-    <p><strong>Trigger Count:</strong>
-        <span th:text="${riskResult.triggerCount}"></span>
-    </p>
+    <p><strong>Risk Level:</strong> <span th:text="${riskResult.riskLevel}"></span></p>
+    <p><strong>Trigger Count:</strong> <span th:text="${riskResult.triggerCount}"></span></p>
 </div>
+
+<div th:if="${riskError != null}" class="error">
+    <p th:text="${riskError}"></p>
+</div>
+
 <!-- Display Medical Notes -->
 <h3>Medical History Notes</h3>
 <ul>
