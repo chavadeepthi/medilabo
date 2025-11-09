@@ -143,20 +143,16 @@ public class PatientController {
                     .ifPresent(cookie -> headers.add(HttpHeaders.COOKIE, "JSESSIONID=" + cookie.getValue()));
         }
 
-        String url = gatewayBaseUrl + "/api/proxy/risk/assessment?patientId=" + id;
-
-        log.info("UI: Calling risk endpoint URL {} with cookies {}", url,
-                Arrays.toString(request.getCookies()));
+        //HttpEntity<Void> entity = new HttpEntity<>(headers);
 
         ResponseEntity<DiabetesAssessmentResult> response = restTemplate.exchange(
-                url,
+                gatewayBaseUrl + "/api/proxy/risk/assessment?patientId=" + id,
                 HttpMethod.GET,
                 createEntityWithSession(request),
                 DiabetesAssessmentResult.class
         );
 
         model.addAttribute("riskResult", response.getBody());
-        log.info("UI: risk assessment response status={}, body={}", response.getStatusCode(), response.getBody());
 
         // Load patient + notes for display
         return showEditForm(id, model, request);
