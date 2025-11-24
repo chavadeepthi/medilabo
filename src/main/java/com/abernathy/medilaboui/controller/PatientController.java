@@ -85,7 +85,8 @@ public class PatientController {
                 entity,
                 Patient.class
         );
-        return "redirect:/patients/all";
+//        return "redirect:/patients/all";
+        return "redirect:"+gatewayBaseUrl+"/patients/all";
     }
 
 

@@ -9,35 +9,6 @@
 <h1>Add New Patient</h1>
 
 <form th:action="@{/patients/add}" th:object="${patient}" method="post">
-    <!--    <div>-->
-<!--        <label for="firstName">First Name:</label>-->
-<!--        <input type="text" id="firstName" th:field="*{firstName}" placeholder="First Name" required/>-->
-<!--    </div>-->
-
-<!--    <div>-->
-<!--        <label for="lastName">Last Name:</label>-->
-<!--        <input type="text" id="lastName" th:field="*{lastName}" placeholder="Last Name" required/>-->
-<!--    </div>-->
-
-<!--    <div>-->
-<!--        <label for="dob">Date of Birth:</label>-->
-<!--        <input type="date" id="dob" th:field="*{dob}" required/>-->
-<!--    </div>-->
-
-<!--    <div>-->
-<!--        <label for="address">Address:</label>-->
-<!--        <input type="text" id="address" th:field="*{address}" placeholder="Address" required/>-->
-<!--    </div>-->
-
-<!--    <div>-->
-<!--        <label for="gender">Address:</label>-->
-<!--        <input type="text" id="gender" th:field="*{gender}" placeholder="Gender" required/>-->
-<!--    </div>-->
-
-<!--    <div>-->
-<!--        <label for="phone">Phone:</label>-->
-<!--        <input type="text" id="phone" th:field="*{phone}" placeholder="Phone Number" required/>-->
-<!--    </div>-->
 
     <div>
         <label for="firstName">First Name:</label>
@@ -90,8 +61,7 @@
 </form>
 
 <div>
-<!--    <a th:href="${gatewayBaseUrl + '/patients/all'}">Back to Patient List</a>-->
-    <a th:href="@{/patients/all}">Back to Patient List</a>
+ <a th:href="@{/patients/all}">Back to Patient List</a>
 </div>
 </body>
 </html>
