@@ -141,34 +141,38 @@ public class PatientController {
 
         log.info("riskRequest:{}", riskRequest);
 
-        // --- Fetch risk assessment ---
-        // Only call risk assessment if notes exist
+
+        // --- Fetch risk assessment --
+
+        // 5️⃣ Call Risk Assessment API via gateway by patient ID (only if notes exist)
         if (!notes.isEmpty()) {
             try {
                 HttpHeaders headers = new HttpHeaders();
                 headers.setContentType(MediaType.APPLICATION_JSON);
-                // preserve session/cookies if needed
-                HttpSession session = request.getSession(false);
-                if (session != null) {
-                    Object jwt = session.getAttribute("JWT");
-                    if (jwt instanceof String) {
-                        headers.set(HttpHeaders.AUTHORIZATION, "Bearer " + jwt);
-                    }
-                }
+                log.info("Testing risk assessment by sending patient ID: {}", patient.getPatientId());
 
-                HttpEntity<RiskAssessmentRequest> requestEntity = new HttpEntity<>(riskRequest, headers);
+                // Create HttpEntity containing patient ID
+                HttpEntity<Long> requestEntityId = new HttpEntity<>(patient.getPatientId(), headers);
 
-                ResponseEntity<DiabetesAssessmentResult> riskResponse = restTemplate.exchange(
-                        gatewayBaseUrl + "/api/proxy/risk/assess",
-                        HttpMethod.POST,
-                        requestEntity,
-                        DiabetesAssessmentResult.class
-                );
+                // Call /risk/check endpoint via gateway
+                ResponseEntity<DiabetesAssessmentResult> riskResponseByID =
+                        restTemplate.exchange(
+                                gatewayBaseUrl + "/api/proxy/risk/check?patientId=" + patient.getPatientId(),
+                                HttpMethod.POST,
+                                entity,
+                                DiabetesAssessmentResult.class
+                        );
 
-                model.addAttribute("riskResult", riskResponse.getBody());
-            } catch (HttpClientErrorException ex) {
-                log.error("Risk assessment failed: status={}, body={}", ex.getStatusCode(), ex.getResponseBodyAsString());
-                model.addAttribute("riskError", "Risk assessment failed: " + ex.getStatusCode());
+                // Get the body
+                DiabetesAssessmentResult riskResultId = riskResponseByID.getBody();
+                log.info("Risk result: {}", riskResultId);
+
+                // Add to model
+                model.addAttribute("riskResult", riskResultId);
+
+            } catch (Exception ex) {
+                log.error("Risk assessment failed for patient {}: {}", id, ex.getMessage());
+                model.addAttribute("riskError", "Risk assessment failed: " + ex.getMessage());
             }
         }
 
