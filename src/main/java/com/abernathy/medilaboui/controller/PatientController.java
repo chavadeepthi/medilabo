@@ -30,11 +30,15 @@ public class PatientController {
     private final RestTemplate restTemplate;
     private final String gatewayBaseUrl;
 
+    @Value("${gateway.external.base-url}")
+    private String gatewayExternalURL;
+
     public PatientController(RestTemplate restTemplate,
                              @Value("${gateway.base-url}") String gatewayBaseUrl) {
         this.restTemplate = restTemplate;
         this.gatewayBaseUrl = gatewayBaseUrl;
         log.info("UI started with gatewayBaseUrl={}", gatewayBaseUrl);
+        //log.info("Auth header", );
     }
 
 //    // -----------------------
@@ -49,7 +53,8 @@ public class PatientController {
     // List all patients
     // -----------------------
     @GetMapping("/all")
-    public String listPatients(Model model, HttpServletRequest request) {
+    public String listPatients(Model model, HttpServletRequest request){
+            //, @RequestHeader("Authorization") String authHeader) {
 
         HttpEntity<Void> entity = createEntityWithSession(request);
 
@@ -60,6 +65,7 @@ public class PatientController {
                 Patient[].class
         );
         log.info("Using gateway URL: {}", gatewayBaseUrl);
+        //log.info("Auth Header", authHeader);
 
         List<Patient> patients = Arrays.asList(response.getBody());
         model.addAttribute("patients", patients);
@@ -86,7 +92,7 @@ public class PatientController {
                 Patient.class
         );
 //        return "redirect:/patients/all";
-        return "redirect:"+gatewayBaseUrl+"/patients/all";
+        return "redirect:"+gatewayExternalURL+"/patients/all";
     }
 
 
@@ -196,7 +202,9 @@ public class PatientController {
 
         // --- 1️⃣ Prepare headers with session and JSON content type ---
         HttpHeaders headers = new HttpHeaders();
+
         headers.setContentType(MediaType.APPLICATION_JSON);
+
         // Propagate session cookie so backend sees authenticated user
         String cookie = request.getHeader("Cookie");
         if (cookie != null) {
@@ -232,7 +240,7 @@ public class PatientController {
 
         // Redirect to gateway patient list
         // Use relative path
-        return "redirect:"+gatewayBaseUrl+"/patients/all";
+        return "redirect:"+gatewayExternalURL+"/patients/all";
     }
 
     // -----------------------
