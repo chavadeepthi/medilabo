@@ -25,13 +25,15 @@ import java.util.stream.Collectors;
 @Slf4j
 @Controller
 @RequestMapping("/patients")
+/** Patient UI controller */
+
 public class PatientController {
 
     private final RestTemplate restTemplate;
     private final String gatewayBaseUrl;
 
     @Value("${gateway.external.base-url}")
-    private String gatewayExternalURL;
+    public String gatewayExternalURL;
 
     public PatientController(RestTemplate restTemplate,
                              @Value("${gateway.base-url}") String gatewayBaseUrl) {
@@ -41,13 +43,6 @@ public class PatientController {
         //log.info("Auth header", );
     }
 
-//    // -----------------------
-//    // RestTemplate bean (can be inside controller)
-//    // -----------------------
-//    @Bean
-//    public RestTemplate restTemplate(RestTemplateBuilder builder) {
-//        return builder.rootUri(gatewayBaseUrl).build();
-//    }
 
     // -----------------------
     // List all patients

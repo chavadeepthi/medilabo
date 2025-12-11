@@ -64,6 +64,58 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.13</version>   <!-- Use latest version if possible -->
+				<executions>
+					<!-- Prepare the agent before tests -->
+					<execution>
+						<id>prepare-agent</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<!-- Generate report: after test phase or other phase you prefer -->
+					<execution>
+						<id>report</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+					<!-- Optional: add a check goal to enforce coverage thresholds -->
+					<execution>
+						<id>check</id>
+						<phase>verify</phase>   <!-- or whatever phase you want to fail build -->
+						<goals>
+							<goal>check</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<rule>
+									<element>BUNDLE</element>
+									<limits>
+										<limit>
+											<counter>LINE</counter>
+											<value>COVEREDRATIO</value>
+											<minimum>0.80</minimum>  <!-- for example 80% lines coverage required -->
+										</limit>
+										<!-- you can also check BRANCH, INSTRUCTION etc. -->
+									</limits>
+								</rule>
+							</rules>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- ensure test plugin is declared (Surefire or Failsafe) -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.0.0-M5</version>  <!-- example version -->
+				<!-- any needed configuration -->
+			</plugin>
 		</plugins>
 	</build>
 
